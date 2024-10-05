@@ -19,8 +19,8 @@ Este proyecto implementa un servidor WebSocket utilizando Bun, un runtime de Jav
 
 1. Clonar el repositorio:
    ```
-   git clone https://github.com/tu-usuario/bun-websocket-server.git
-   cd bun-websocket-server
+   git clone https://github.com/osvalois/websocket
+   cd websocket
    ```
 
 2. Instalar dependencias:
@@ -54,12 +54,12 @@ Para construir y ejecutar el servidor utilizando Docker:
 
 1. Construir la imagen:
    ```
-   docker build -t bun-websocket-server .
+   docker build -t websocket .
    ```
 
 2. Ejecutar el contenedor:
    ```
-   docker run -p 3000:3000 bun-websocket-server
+   docker run -p 3000:3000 websocket
    ```
 
 ## API
