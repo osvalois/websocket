@@ -1,0 +1,43 @@
+# Dependencias
+node_modules/
+bun.lockb
+
+# Archivos de construcción
+build/
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Directorios de caché
+.cache/
+.npm/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de prueba de cobertura
+coverage/
+
+# Otros
+*.bak
+*.orig

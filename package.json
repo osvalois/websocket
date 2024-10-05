@@ -1,0 +1,16 @@
+{
+    "name": "websocket-server",
+    "version": "1.0.0",
+    "description": "Servidor WebSocket con Bun",
+    "main": "server.js",
+    "scripts": {
+      "start": "bun run server.js",
+      "dev": "bun --hot run server.js"
+    },
+    "keywords": [
+      "websocket",
+      "bun"
+    ],
+    "author": "",
+    "license": "ISC"
+  }

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Servidor WebSocket</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #messageLog {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        #status {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de Servidor WebSocket</h1>
+    
+    <div>
+        <p>Estado: <span id="status">Desconectado</span></p>
+        <button onclick="connectWebSocket()">Conectar WebSocket</button>
+        <button onclick="disconnectWebSocket()">Desconectar WebSocket</button>
+    </div>
+
+    <h2>Mensajes recibidos:</h2>
+    <div id="messageLog"></div>
+
+    <h2>Enviar mensaje:</h2>
+    <input type="text" id="messageInput" placeholder="Escribe un mensaje">
+    <button onclick="sendMessage()">Enviar Mensaje</button>
+
+    <script>
+        let socket;
+        const status = document.getElementById('status');
+        const messageLog = document.getElementById('messageLog');
+        const messageInput = document.getElementById('messageInput');
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.hostname;
+            const port = window.location.port;
+            const wsUrl = `${protocol}//${host}${port ? ':'+port : ''}`;
+            
+            socket = new WebSocket(wsUrl);
+            
+            socket.onopen = function(e) {
+                status.textContent = 'Conectado';
+                log('Conexión WebSocket establecida');
+            };
+
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                log('Mensaje recibido: ' + data.message);
+            };
+
+            socket.onclose = function(event) {
+                if (event.wasClean) {
+                    status.textContent = 'Desconectado';
+                    log(`Conexión cerrada limpiamente, código=${event.code} razón=${event.reason}`);
+                } else {
+                    status.textContent = 'Desconectado';
+                    log('Conexión perdida');
+                }
+            };
+
+            socket.onerror = function(error) {
+                status.textContent = 'Error';
+                log(`Error: ${error.message}`);
+            };
+        }
+
+        function disconnectWebSocket() {
+            if (socket) {
+                socket.close();
+                status.textContent = 'Desconectado';
+                log('Desconectado del WebSocket');
+            }
+        }
+
+        function sendMessage() {
+            const message = messageInput.value;
+            if (message) {
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    // Enviar directamente por WebSocket si está conectado
+                    socket.send(JSON.stringify({ message: message }));
+                    log('Mensaje enviado por WebSocket: ' + message);
+                } else {
+                    // Enviar por POST si el WebSocket no está conectado
+                    sendPostMessage(message);
+                }
+                messageInput.value = '';
+            }
+        }
+
+        function sendPostMessage(message) {
+            const serverUrl = window.location.origin + '/send';
+            axios.post(serverUrl, { message: message })
+                .then(function (response) {
+                    log('Mensaje POST enviado: ' + message);
+                })
+                .catch(function (error) {
+                    log('Error al enviar mensaje POST: ' + error);
+                });
+        }
+
+        function log(message) {
+            const p = document.createElement('p');
+            p.textContent = message;
+            messageLog.appendChild(p);
+            messageLog.scrollTop = messageLog.scrollHeight;
+        }
+    </script>
+</body>
+</html>
